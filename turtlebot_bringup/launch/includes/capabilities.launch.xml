@@ -3,7 +3,7 @@
  -->
 <launch>
   <arg name="base"/>
-  <arg name="3d_sensor"/>
+  <arg name="3dsensor"/>
   <!-- Start capability server including parameters for base-specific default providers -->
   <arg name="test_case" default="minimal" />
   <arg name="debug" default="false" />

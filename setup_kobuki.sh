@@ -9,5 +9,6 @@
 
 export TURTLEBOT_BASE=kobuki
 export TURTLEBOT_STACKS=hexagons
-export TURTLEBOT_3D_SENSOR=kinect
+export TURTLEBOT_3D_SENSOR=astra
+export TURTLEBOT_LASER=hokuyo
 export TURTLEBOT_SIMULATION=false
