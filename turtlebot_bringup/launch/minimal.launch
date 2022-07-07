@@ -20,8 +20,13 @@
     <arg name="base" value="$(arg base)" />
     <arg name="serialport" value="$(arg serialport)" />
   </include>
-  <include unless="$(eval arg('battery') == 'None')" file="$(find turtlebot_bringup)/launch/includes/netbook.launch.xml">
+
+  <include file="$(find turtlebot_bringup)/launch/hokuyo.launch" />
+
+  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find turtlebot_bringup)/rviz/turtlebot_hokuyo.rviz"/>
+  
+  <!--include unless="$(eval arg('battery') == 'None')" file="$(find turtlebot_bringup)/launch/includes/netbook.launch.xml">
     <arg name="battery" value="$(arg battery)" />
-  </include>
+  </include-->
 
 </launch>
