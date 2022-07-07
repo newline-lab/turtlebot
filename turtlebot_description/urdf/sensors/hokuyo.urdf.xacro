@@ -4,7 +4,7 @@
 	<xacro:include filename="$(find turtlebot_description)/urdf/turtlebot_properties.urdf.xacro"/>
 
 	<xacro:macro name="sensor_hokuyo" params="parent">
-	<link name="laser_joint">
+	<link name="laser">
 		<collision>
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
@@ -27,7 +27,7 @@
 		<axis xyz="0 0 1" />
 		<origin xyz="-0.145 0 0.05" rpy="0 0 1.570796"/>
 		<parent link="${parent}"/>
-		<child link="laser_joint"/>
+		<child link="laser"/>
 	</joint>
 	</xacro:macro>
 </robot>
