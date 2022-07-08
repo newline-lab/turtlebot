@@ -18,26 +18,34 @@ from time import sleep
 
 from statistics import mean
 
-g_range_ahead = 1.0
-type(g_range_ahead)
+
+g_range_ahead = []
+for i in range(0,725):  
+    g_range_ahead.append(i)
+
+#list_true = []
 
 def callback(data): 
-
-    g_range_ahead = min(data.ranges[300:420])
-    print("grange1", g_range_ahead)
-    #scan_sub = rospy.Subscriber('scan', LaserScan, callback) 
-    #cmd_vel_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
+    for i in range(0,725):  
+        g_range_ahead[i] = data.ranges[i]
 
 def get_g_range_ahead():
-    print("grange2", g_range_ahead)
-    return g_range_ahead
+    global list_true 
+    list_true = []
+    for i in range(100,650): 
+        if g_range_ahead[i] > 0.02:
+            list_true.append(g_range_ahead[i])
+    min_grange = min(list_true)
+    print("min ranges", min_grange)
 
-def DrawZgzag():
+    return min_grange
+
+
+
+def main():
     
     rospy.init_node('listener', anonymous=True)
-    rospy.Subscriber("scan", LaserScan, callback)
-    get_g_range_ahead()
-    
+    rospy.Subscriber("/scan", LaserScan, callback)
 
     cmd_vel = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
 
@@ -45,9 +53,9 @@ def DrawZgzag():
     d = 35
 
     while not rospy.is_shutdown():
-        g_range_ahead = get_g_range_ahead()
+        min_grange = get_g_range_ahead()
         move_cmd = Twist()
-        move_cmd.linear.x = 0.2
+        move_cmd.linear.x = -0.1
 
         d = d * -1
 
@@ -57,29 +65,20 @@ def DrawZgzag():
 
         turn_cmd2 = Twist()
         turn_cmd2.linear.x = 0
-        turn_cmd2.angular.z = radians(45);
+        turn_cmd2.angular.z = radians(35);
 
-        if(g_range_ahead < 0.5):
-            print("grange", g_range_ahead)
+        if(min_grange < 0.3):
+            print("Obst")
             rospy.loginfo("obistical")
-
-            for x in range(0,10): 
-                #cmd_vel.publish(turn_cmd2) 
-                r.sleep()
+            rospy.loginfo("Turning")
+            cmd_vel.publish(turn_cmd2) 
+            r.sleep()
 
         else: 
             rospy.loginfo("Going Straight")
-            for x in range(0,10):
-                #cmd_vel.publish(move_cmd)
-                r.sleep()
-        # turn 90 degrees
-
-            rospy.loginfo("Turning")
-            for x in range(0,10): 
-                #cmd_vel.publish(turn_cmd) 
-                r.sleep()
-
-
+            cmd_vel.publish(move_cmd)
+            r.sleep()
+        
 
 def shutdown():
     # stop turtlebot
@@ -90,8 +89,8 @@ def shutdown():
 
 if __name__ == '__main__':
     try: 
-        DrawZgzag()
+        main()
         rospy.loginfo("trying...")
     except: 
-        shutdown()
-        rospy.loginfo("shutdown")
+        main()
+        rospy.loginfo("trying...")
